@@ -12,7 +12,7 @@
     state: present
 
 - name: Set DPKG architecture
-  set_fact:
+  ansible.builtin.set_fact:
     dpkg_architecture: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
 
 - name: Add an Jellyfin APT signing key
