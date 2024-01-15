@@ -35,29 +35,6 @@
     update_cache: true
     state: present
 
-- name: Ensure ffmpeg jellyfin is installed
-  ansible.builtin.apt:
-    deb: "{{ jellyfin_ffmpeg_download_url }}/{{ jellyfin_ffmpeg_version }}/jellyfin-ffmpeg6_{{ jellyfin_ffmpeg_version }}-bookworm_amd64.deb"
-    state: present
-  notify: Restart jellyfin
-
-- name: Ensure jellyfin-ffmpeg is used by jellyfin
-  ansible.builtin.copy:
-    src: jellyfin.sh
-    dest: /opt/jellyfin/jellyfin.sh
-    mode: "0755"
-    owner: jellyfin
-    group: jellyfin
-  notify: Restart jellyfin
-
-- name: Ensure jellyfin service file is on remote
-  ansible.builtin.template:
-    src: jellyfin.service.j2
-    dest: /etc/systemd/system/jellyfin.service
-    mode: "0664"
-    owner: root
-    group: root
-
 - name: Ensure jellyfin service is enabled and started
   ansible.builtin.service:
     name: jellyfin

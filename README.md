@@ -3,18 +3,13 @@ Install and configure Jellyfin
 
 The role installs and configures Jellyfin for my server.
 
-Role Variables
---------------
-
-The ```jellyfin_ffmpeg_version``` can be set to the jellyfin ffmpeg version from <https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg>
-
 Example Playbook
 ----------------
 
 ```yaml
     - hosts: servers
       roles:
-         - { role: ansible-jellyfin, jellyfin_ffmpeg_version: 6.0-8 }
+         - { role: ansible-jellyfin }
 ```
 
 License
