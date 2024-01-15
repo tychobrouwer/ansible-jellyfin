@@ -1,0 +1,4 @@
+---
+# vars file for ansible-jellyfin
+jellyfin_ffmpeg_download_url: https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg
+jellyfin_ffmpeg_version: 6.0-8

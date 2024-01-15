@@ -1,0 +1,65 @@
+---
+# tasks file for ansible-jellyfin
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Ensure required packages are installed
+  ansible.builtin.package:
+    name: gnupg
+    state: present
+
+- name: Set DPKG architecture
+  set_fact:
+    dpkg_architecture: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
+
+- name: Add an Jellyfin APT signing key
+  ansible.builtin.apt_key:
+    url: https://repo.jellyfin.org/jellyfin_team.gpg.key
+    keyring: /etc/apt/keyrings/jellyfin.gpg
+    state: present
+
+- name: Add Jellyfin source
+  ansible.builtin.template:
+    src: jellyfin.sources.j2
+    dest: /etc/apt/sources.list.d/jellyfin.sources
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Install jellyfin
+  ansible.builtin.apt:
+    name: jellyfin
+    update_cache: true
+    state: present
+
+- name: Ensure ffmpeg jellyfin is installed
+  ansible.builtin.apt:
+    deb: "{{ jellyfin_ffmpeg_download_url }}/{{ jellyfin_ffmpeg_version }}/jellyfin-ffmpeg6_{{ jellyfin_ffmpeg_version }}-bookworm_amd64.deb"
+    state: present
+  notify: Restart jellyfin
+
+- name: Ensure jellyfin-ffmpeg is used by jellyfin
+  ansible.builtin.copy:
+    src: jellyfin.sh
+    dest: /opt/jellyfin/jellyfin.sh
+    mode: "0755"
+    owner: jellyfin
+    group: jellyfin
+  notify: Restart jellyfin
+
+- name: Ensure jellyfin service file is on remote
+  ansible.builtin.template:
+    src: jellyfin.service.j2
+    dest: /etc/systemd/system/jellyfin.service
+    mode: "0664"
+    owner: root
+    group: root
+
+- name: Ensure jellyfin service is enabled and started
+  ansible.builtin.service:
+    name: jellyfin
+    state: started
+    enabled: true

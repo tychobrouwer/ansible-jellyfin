@@ -1,0 +1,6 @@
+Types: deb
+URIs: https://repo.jellyfin.org/{{ ansible_distribution | lower }}
+Suites: {{ ansible_distribution_release }}
+Components: main
+Architectures: {{ dpkg_architecture }}
+Signed-By: /etc/apt/keyrings/jellyfin.gpg
