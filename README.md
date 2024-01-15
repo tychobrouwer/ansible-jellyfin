@@ -9,7 +9,7 @@ Example Playbook
 ```yaml
     - hosts: servers
       roles:
-         - { role: ansible-jellyfin }
+         - { role: tychobrouwer.jellyfin }
 ```
 
 License
