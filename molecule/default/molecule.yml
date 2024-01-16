@@ -1,5 +1,9 @@
 ---
 role_name_check: 1
+dependency:
+  name: galaxy
+  options:
+    force: true
 driver:
   name: docker
 platforms:
