@@ -7,9 +7,9 @@ Example Playbook
 ----------------
 
 ```yaml
-    - hosts: servers
-      roles:
-         - { role: tychobrouwer.jellyfin }
+- hosts: servers
+  roles:
+    - role: tychobrouwer.jellyfin
 ```
 
 License
