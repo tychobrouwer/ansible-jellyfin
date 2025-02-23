@@ -8,35 +8,30 @@
 
 - name: Ensure required packages are installed
   ansible.builtin.package:
-    name: gnupg
+    name:
+      - gnupg
+      - apt-transport-https
     state: present
 
-- name: Set DPKG architecture
-  ansible.builtin.set_fact:
-    dpkg_architecture: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
-
-- name: Add an Jellyfin APT signing key
+- name: Add Jellyfin APT signing key
   ansible.builtin.apt_key:
-    url: https://repo.jellyfin.org/jellyfin_team.gpg.key
+    url: "{{ jellyfin_gpg_key }}"
     keyring: /etc/apt/keyrings/jellyfin.gpg
     state: present
 
-- name: Add Jellyfin source
-  ansible.builtin.template:
-    src: jellyfin.sources.j2
-    dest: /etc/apt/sources.list.d/jellyfin.sources
-    mode: "0644"
-    owner: root
-    group: root
+- name: Add Jellyfin APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/jellyfin.gpg] {{ jellyfin_apt_repo }} {{ ansible_distribution_release }} main"
+    state: present
+    filename: jellyfin
 
-- name: Install jellyfin
+- name: Install Jellyfin
   ansible.builtin.apt:
     name: jellyfin
-    update_cache: true
     state: present
 
 - name: Ensure jellyfin service is enabled and started
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: jellyfin
     state: started
     enabled: true
