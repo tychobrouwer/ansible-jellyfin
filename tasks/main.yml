@@ -14,10 +14,10 @@
     state: present
 
 - name: Add Jellyfin APT signing key
-  ansible.builtin.apt_key:
-    url: "{{ jellyfin_gpg_key }}"
-    keyring: /etc/apt/keyrings/jellyfin.gpg
-    state: present
+  ansible.builtin.shell: |
+    curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/jellyfin.gpg
+  args:
+    creates: /etc/apt/keyrings/jellyfin.gpg
 
 - name: Add Jellyfin APT repository
   ansible.builtin.copy:
