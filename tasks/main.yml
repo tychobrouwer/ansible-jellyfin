@@ -20,10 +20,17 @@
     state: present
 
 - name: Add Jellyfin APT repository
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/jellyfin.gpg] {{ jellyfin_apt_repo }} {{ ansible_distribution_release }} main"
-    state: present
-    filename: jellyfin
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/jellyfin.sources
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      Types: deb
+      URIs: https://repo.jellyfin.org/debian/
+      Suites: trixie
+      Components: main
+      Signed-By: /etc/apt/keyrings/jellyfin.gpg
 
 - name: Install Jellyfin
   ansible.builtin.apt:
